@@ -4,13 +4,21 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IPrintServant extends Remote {
-    /*public void print(String filename, String printer);
-    public void queue(String printer);
-    public void topQueue(String printer, int job);*/
-    public void start() throws RemoteException;
-    /*public void stop();
-    public void restart();
-    public void status();
-    public void readConfig(String parameter);
-    public void setConfig(String parameter, String value);*/
+	public void print(String filename, String printer) throws RemoteException;
+
+	public void queue(String printer) throws RemoteException;
+
+	public void topQueue(String printer, int job) throws RemoteException;
+
+	public void start() throws RemoteException;
+
+	public void stop() throws RemoteException;
+
+	public void restart() throws RemoteException;
+
+	public void status(String printer) throws RemoteException;
+
+	public void readConfig(String parameter) throws RemoteException;
+
+	public void setConfig(String parameter, String value) throws RemoteException;
 }
