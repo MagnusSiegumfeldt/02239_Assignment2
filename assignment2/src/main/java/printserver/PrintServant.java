@@ -1,9 +1,11 @@
 package printserver;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
+import auth.PasswordManager;
 import printer.PrinterOrchestrator;
 
 public class PrintServant extends UnicastRemoteObject implements IPrintServant {
@@ -15,6 +17,25 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
 	public PrintServant() throws RemoteException {
 		super();
 		this.running = false;
+
+		try {
+			System.out.println("Got this far");
+			this.login();
+		} catch (Exception e) {
+		
+		}
+	}
+
+	public boolean login() throws IOException {
+		System.out.println("Got this far as well");
+
+		PasswordManager pwManager = new PasswordManager();
+		pwManager.checkLogin("Magnus", "Yay123");
+		pwManager.checkLogin("Magnus", "Noo123");
+		pwManager.checkLogin("John", "Yay123");
+		System.out.println("Got here btw");
+
+		return true;
 	}
 
 	public void print(String filename, String printer) throws RemoteException {
@@ -31,6 +52,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
 
 	public void start() throws RemoteException {
 		System.out.println("Server started.");
+		
 		this.running = true;
 	}
 
