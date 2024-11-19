@@ -14,6 +14,34 @@ public class Client {
 		//User jens = new User(janitor)
 
 		/*
+
+		User <- printAccess
+
+
+
+		
+
+		manager <- superUser + technician + addLogin
+		technician <- start,stop, restart, inspect;(status,	setConfig, readConfig)
+		
+		
+		manager <- technician, superuser, addLogin
+		technician <- starter,configManager
+		superUser <- basicUser, topQueue, restart
+		basicUser <- print, queue
+		
+		starter <- start, stop, restart
+		configManager <- status, setConfig, readConfig
+
+
+		class user
+		class powerUser extends user
+
+		class statusAccess;
+		class starter;
+		class configManager extends statusAccess;
+
+
 		class Janitor : User {
 			Janitor(printserver) {
 				this.printserver = printserver;

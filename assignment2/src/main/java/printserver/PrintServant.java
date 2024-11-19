@@ -7,6 +7,7 @@ import java.util.HashMap;
 import auth.password.PasswordManager;
 import auth.roles.AccessControlListManager;
 import auth.roles.IAccessControl;
+import auth.roles.RoleBasedAccessControlManager;
 import auth.session.SessionManager;
 import printer.PrinterManager;
 
@@ -20,7 +21,14 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
   IAccessControl accessControl;
 
   public PrintServant() throws RemoteException {
-    this("password.csv", "acl.txt");
+    // this("password.csv", p + "acl.txt");
+
+    this(
+        "password.csv",
+        "config/rbac/roles.txt",
+        "config/rbac/hierarchy.txt",
+        "config/rbac/user_roles.txt",
+        "config/rbac/permissions.txt");
   }
 
   public PrintServant(String passwordFile, String aclFile) throws RemoteException {
@@ -29,6 +37,15 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
     this.passManager = new PasswordManager(passwordFile);
     this.sessManager = new SessionManager(1);
     this.accessControl = new AccessControlListManager(aclFile);
+  }
+
+  public PrintServant(String passwordFile, String rolesFile, String hierarchyFile, String userRolesFile,
+      String permissionsFile) throws RemoteException {
+    super();
+    this.running = false;
+    this.passManager = new PasswordManager(passwordFile);
+    this.sessManager = new SessionManager(1);
+    this.accessControl = new RoleBasedAccessControlManager(rolesFile, hierarchyFile, userRolesFile, permissionsFile);
   }
 
   public boolean addLogin(String username, String password) throws RemoteException {
@@ -45,70 +62,81 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
     return loginSuccess;
   }
 
-  public void logout(String username) throws RemoteException {
+  public boolean logout(String username) throws RemoteException {
     if (this.sessManager.check(username)) {
       this.sessManager.unset();
       System.out.println("Logged out.");
+      return true;
     } else {
       System.out.println("Could not logout.");
+      return false;
     }
   }
 
-  public void print(String filename, String printer) throws RemoteException {
+  public boolean print(String filename, String printer) throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "print");
 
     printerManager.print(filename, printer);
+    return true;
   }
 
-  public void queue(String printer) throws RemoteException {
+  public boolean queue(String printer) throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "queue");
 
     printerManager.queue(printer);
+    return true;
   }
 
-  public void topQueue(String printer, int job) throws RemoteException {
+  public boolean topQueue(String printer, int job) throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "topQueue");
     printerManager.topQueue(printer, job);
+    return true;
   }
 
-  public void start() throws RemoteException {
+  public boolean start() throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "start");
 
     System.out.println("Server started.");
     this.running = true;
+    return true;
   }
 
-  public void stop() throws RemoteException {
+  public boolean stop() throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "stop");
 
     System.out.println("Server stopped.");
     this.running = false;
+    return true;
   }
 
-  public void restart() throws RemoteException {
+  public boolean restart() throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "restart");
 
     this.stop();
     this.printerManager.clear();
     this.start();
+    return true;
   }
 
-  public void status(String printer) throws RemoteException {
+  public boolean status(String printer) throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "status");
 
     System.out.println("Printer: \"" + printer + "\" is currently ..." + "VERY HAPPY");
+    return true;
   }
 
-  public void readConfig(String parameter) throws RemoteException {
+  public boolean readConfig(String parameter) throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "readConfig");
 
     String cfg = config.get(parameter);
     System.out.println(cfg != null ? cfg : "No config for " + parameter);
+    return true;
   }
 
-  public void setConfig(String parameter, String value) throws RemoteException {
+  public boolean setConfig(String parameter, String value) throws RemoteException {
     this.accessControl.check(this.sessManager.getCurrentUser(), "setConfig");
 
     config.put(parameter, value);
+    return true;
   }
 }
