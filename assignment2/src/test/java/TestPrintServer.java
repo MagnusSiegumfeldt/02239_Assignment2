@@ -13,43 +13,50 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
+import auth.roles.MissingRequiredAccessException;
 import printserver.PrintServant;
 
 public class TestPrintServer {
-    private PrintServant printServant;
-    
-    @Before
-    public void setUp() throws RemoteException {
-        String passwordFile = "./src/test/res/password_role_tests.csv";
-        String aclFile = "./src/test/res/acl_tests.txt";
+  private PrintServant printServant;
 
-        this.printServant = new PrintServant(passwordFile, aclFile);
-        
-		String username = "alice";
-        String password = "pass";
+  @Before
+  public void setUp() throws RemoteException {
+    String passwordFile = "./src/test/res/password_role_tests.csv";
+    String aclFile = "./src/test/res/acl_tests.txt";
 
-		String salt = BCrypt.gensalt();
-		String hPass = BCrypt.hashpw(password, salt);
+    this.printServant = new PrintServant(passwordFile, aclFile);
 
-        try {
-            BufferedWriter writer = Files.newBufferedWriter(Paths.get(passwordFile));
-            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL); 
-            csvPrinter.printRecord(Arrays.asList("username", "password", "salt"));
-            csvPrinter.printRecord(Arrays.asList(username, hPass, salt));
-    
-            csvPrinter.flush();   
-            csvPrinter.close();
-        } catch (Exception e) {
-            assertFalse(true);
-        }
+    String username = "alice";
+    String password = "pass";
+
+    String salt = BCrypt.gensalt();
+    String hPass = BCrypt.hashpw(password, salt);
+
+    try {
+      BufferedWriter writer = Files.newBufferedWriter(Paths.get(passwordFile));
+      CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL);
+      csvPrinter.printRecord(Arrays.asList("username", "password", "salt"));
+      csvPrinter.printRecord(Arrays.asList(username, hPass, salt));
+
+      csvPrinter.flush();
+      csvPrinter.close();
+    } catch (Exception e) {
+      assertFalse(true);
     }
+  }
 
-    @Test
-    public void testPrintServer() throws RemoteException{
-        assertTrue(this.printServant.login("alice", "pass"));
-        assertTrue(this.printServant.addLogin("bob", "pass"));
-        this.printServant.logout("alice");
-        assertTrue(this.printServant.login("bob", "pass"));
-        assertFalse(this.printServant.addLogin("erica", "pass"));
-    }
+  @Test
+  public void testPrintServer() throws RemoteException {
+    assertTrue(this.printServant.login("alice", "pass"));
+    assertTrue(this.printServant.addLogin("bob", "pass"));
+    this.printServant.logout("alice");
+    assertTrue(this.printServant.login("bob", "pass"));
+  }
+
+  @Test(expected = MissingRequiredAccessException.class)
+  public void testInvalidLogin() throws RemoteException {
+    this.printServant.login("bob", "pass");
+    this.printServant.addLogin("erica", "pass");
+  }
+
 }
