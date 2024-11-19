@@ -7,6 +7,7 @@ import java.util.HashMap;
 import auth.password.PasswordManager;
 import auth.roles.AccessControlListManager;
 import auth.roles.IAccessControl;
+import auth.roles.RoleBasedAccessControlManager;
 import auth.session.SessionManager;
 import printer.PrinterManager;
 
@@ -20,7 +21,14 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
   IAccessControl accessControl;
 
   public PrintServant() throws RemoteException {
-    this("password.csv", "rbac.txt");
+    // this("password.csv", p + "acl.txt");
+
+    this(
+        "password.csv",
+        "config/rbac/roles.txt",
+        "config/rbac/hierarchy.txt",
+        "config/rbac/user_roles.txt",
+        "config/rbac/permissions.txt");
   }
 
   public PrintServant(String passwordFile, String aclFile) throws RemoteException {
@@ -29,6 +37,15 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
     this.passManager = new PasswordManager(passwordFile);
     this.sessManager = new SessionManager(1);
     this.accessControl = new AccessControlListManager(aclFile);
+  }
+
+  public PrintServant(String passwordFile, String rolesFile, String hierarchyFile, String userRolesFile,
+      String permissionsFile) throws RemoteException {
+    super();
+    this.running = false;
+    this.passManager = new PasswordManager(passwordFile);
+    this.sessManager = new SessionManager(1);
+    this.accessControl = new RoleBasedAccessControlManager(rolesFile, hierarchyFile, userRolesFile, permissionsFile);
   }
 
   public boolean addLogin(String username, String password) throws RemoteException {
