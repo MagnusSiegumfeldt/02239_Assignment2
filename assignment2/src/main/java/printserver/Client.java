@@ -9,8 +9,34 @@ public class Client {
 	public static void main(String[] args) throws NotBoundException, MalformedURLException, RemoteException {
 		IPrintServant printServer = (IPrintServant) Naming.lookup("rmi://localhost:5099/printserver");
 		
+		// User[] users;
 
-		printServer.start();
-		System.out.println("Client exit.");
+		//User jens = new User(janitor)
+
+		/*
+		class Janitor : User {
+			Janitor(printserver) {
+				this.printserver = printserver;
+			}
+			print() {
+				printserver.print();
+			}
+			...
+		}
+
+		User jens = new Janitor(printserver);
+		jens.print();
+		
+		printserver.print();
+		
+		printServer.start();*/
+		//boolean loginSuccess = printServer.login("magnus", "test123");
+		
+
+		
+
+
+
+
 	}
 }

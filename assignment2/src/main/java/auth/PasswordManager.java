@@ -18,54 +18,93 @@ import org.apache.commons.csv.CSVRecord;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordManager {
-	private static String FILE_NAME = "./pwrds.csv";
+	String passwordFile;
 
-	public PasswordManager() throws IOException {}
-
-	public boolean checkLogin(String username, String password) throws FileNotFoundException, IOException {
-		try {
-			Reader in = new FileReader(FILE_NAME);
-			CSVFormat csvFormat = CSVFormat.EXCEL.builder().setHeader().setSkipHeaderRecord(false).build();
-
-			CSVParser csvParser = new CSVParser(in, csvFormat);
-			Iterator<CSVRecord> csvIterator = csvParser.iterator();
-
-			while (csvIterator.hasNext()) {
-				CSVRecord record = csvIterator.next();
-
-				String rUser = record.get("username");
-				String rPass = record.get("password");
-				String rSalt = record.get("salt");
-				String hPass = BCrypt.hashpw(password, rSalt);
-				
-				if (rUser.equals(username) && hPass.equals(rPass)) {
-					System.out.println("Verified password");
-					csvParser.close();
-					return true;
-				}
-			}
-
-			System.out.println("Didn't verify password");
-			csvParser.close();
-			return false;
-		} catch (Exception e) {
-			System.err.println(e);
-			return false;
-		}
+	public PasswordManager() {
+		this("passwords.csv");
+	}
+	public PasswordManager(String filename) {
+		this.passwordFile = filename;
 	}
 
-	public void createLogin(String username, String password) {
+	public boolean checkLogin(String username, String password) {
+		Reader in;
+		CSVFormat csvFormat;
+		CSVParser csvParser;
+		
+		boolean success = false;
+
+		try {
+			in = new FileReader(this.passwordFile);
+
+		} catch (FileNotFoundException e) {
+			System.err.println("Could not find password file: " + e);
+			return false;
+		}
+		
+		csvFormat = CSVFormat.EXCEL.builder().setHeader().setSkipHeaderRecord(false).build();
+		try {
+			csvParser = new CSVParser(in, csvFormat);
+		} catch (IOException e) {
+			System.err.println("Could not parse password file: " + e);
+			return false;			
+		}
+
+		Iterator<CSVRecord> csvIterator = csvParser.iterator();
+		while (csvIterator.hasNext()) {
+			CSVRecord record = csvIterator.next();
+
+			String rUser = record.get("username");
+			String rPass = record.get("password");
+			String rSalt = record.get("salt");
+			String hPass = BCrypt.hashpw(password, rSalt);
+			
+			if (rUser.equals(username) && hPass.equals(rPass)) {
+				System.out.println("Verified password");
+				success = true;
+			}
+		}
+
+		try {
+			csvParser.close();
+		} catch (IOException e) {
+			System.err.println("Could not close parser: " + e);
+			return false;
+		}
+
+		return success;
+	}
+
+	public boolean createLogin(String username, String password) {
 		String salt = BCrypt.gensalt();
 		String hPass = BCrypt.hashpw(password, salt);
 
 		try {
-            BufferedWriter writer = Files.newBufferedWriter(Paths.get(FILE_NAME), StandardOpenOption.APPEND);
+            BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.passwordFile), StandardOpenOption.APPEND);
             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL); 
 
             csvPrinter.printRecord(Arrays.asList(username, hPass, salt));
 
             csvPrinter.flush();   
-			csvPrinter.close();         
-        } catch (Exception e) {}
+			csvPrinter.close();
+			return true;         
+        } catch (IOException e) {
+			System.err.println("Could not add login: " + e);
+			return false;
+		}
+	}
+
+	public void clear() {
+		try {
+            BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.passwordFile));
+            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL); 
+
+            csvPrinter.printRecord(Arrays.asList("username", "password", "salt"));
+
+            csvPrinter.flush();   
+			csvPrinter.close();
+        } catch (IOException e) {
+			System.err.println("Could not add login: " + e);
+		}
 	}
 }

@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PrinterOrchestrator {
+public class PrinterManager {
   // TODO: Make printer class for abstraction
   HashMap<String, ArrayList<String>> queues = new HashMap<String, ArrayList<String>>();
 
