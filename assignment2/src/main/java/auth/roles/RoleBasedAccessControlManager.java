@@ -13,7 +13,7 @@ public class RoleBasedAccessControlManager implements IAccessControl {
 
   private Map<String, Set<String>> roleHierarchy; // Role hierarchy (role -> set of inherited roles)
   private Map<String, Set<String>> rolePermissions; // Permissions for each role
-  private Map<String, Set<String>> userRoles; // Roles assigned to each user
+  private Map<String, String> userRoles; // Roles assigned to each user
 
   public RoleBasedAccessControlManager(String rolesFile, String hierarchyFile, String userRolesFile,
       String permissionsFile) {
@@ -61,8 +61,8 @@ public class RoleBasedAccessControlManager implements IAccessControl {
         String[] parts = line.split(":");
         if (parts.length == 2) {
           String user = parts[0].trim();
-          String[] roles = parts[1].split(",");
-          userRoles.put(user, new HashSet<>(Arrays.asList(roles)));
+          String roles = parts[1].trim();
+          userRoles.put(user, roles);
         }
       }
     } catch (IOException e) {
@@ -87,16 +87,13 @@ public class RoleBasedAccessControlManager implements IAccessControl {
   }
 
   public boolean check(String username, String resource) throws MissingRequiredAccessException {
-    Set<String> userAssignedRoles = userRoles.get(username);
-    if (userAssignedRoles == null) {
+    String userAssignedRole = userRoles.get(username);
+    if (userAssignedRole == null) {
       throw new MissingRequiredAccessException("User " + username + " has no roles.");
     }
 
     Set<String> effectiveRoles = new HashSet<>();
-
-    for (String role : userAssignedRoles) {
-      expandRole(role, effectiveRoles);
-    }
+    expandRole(userAssignedRole, effectiveRoles);
 
     for (String role : effectiveRoles) {
       Set<String> permissions = rolePermissions.get(role);
@@ -106,7 +103,7 @@ public class RoleBasedAccessControlManager implements IAccessControl {
     }
 
     throw new MissingRequiredAccessException(
-        "Resource: " + resource + " is not allowed for user roles: " + String.join(", ", userAssignedRoles));
+        "Resource: " + resource + " is not allowed for user roles: " + String.join(", ", userAssignedRole));
   }
 
   private void expandRole(String role, Set<String> effectiveRoles) {
