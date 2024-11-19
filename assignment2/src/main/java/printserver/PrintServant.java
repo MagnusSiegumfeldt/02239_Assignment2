@@ -32,7 +32,8 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServant {
 		PasswordManager pwManager = new PasswordManager();
 		pwManager.checkLogin("Magnus", "Yay123");
 		pwManager.checkLogin("Magnus", "Noo123");
-		pwManager.checkLogin("John", "Yay123");
+		pwManager.checkLogin("magnus", "test123");
+		//pwManager.createLogin("magnus", "test123");
 		System.out.println("Got here btw");
 
 		return true;
