@@ -4,7 +4,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-import roles.AccessControlListManager;
+import accesscontrol.*;
 
 public class TestAccessControlList {
     private AccessControlListManager aclManager;

@@ -19,20 +19,18 @@ public class SessionManager {
         this.sessionExp = this.sessionTime.plusSeconds(this.sessionLength);
     }
 
-    public boolean check(String username) {
-        if (username.equals(this.username) && this.sessionExp.compareTo(LocalDateTime.now()) > 0) {
+    public boolean active() {
+        if (this.sessionExp.compareTo(LocalDateTime.now()) > 0) {
             return true;
         }
         return false;
     }
 
-    public void unset() {
-
-    }
-
-    public String getCurrentUser() {
+    public String user() {
         return username;
     }
 
+    public void unset() {
 
+    }
 }
