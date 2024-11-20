@@ -4,10 +4,11 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
+import auth.password.IPasswordManager;
 import auth.password.PasswordManager;
 
-public class TestPasswordManager {
-  private PasswordManager passwordManager;
+public class UnitPasswordManagerTest {
+  private IPasswordManager passwordManager;
 
   @Before
   public void setUp() throws Exception {

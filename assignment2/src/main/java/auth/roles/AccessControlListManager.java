@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class AccessControlListManager implements IAccessControl {
+public class AccessControlListManager implements IAccessControlManager {
 
-  HashMap<String, ArrayList<String>> accessControlList;
+  private final HashMap<String, ArrayList<String>> accessControlList;
 
   public AccessControlListManager(String aclFile) {
     accessControlList = new HashMap<String, ArrayList<String>>();
@@ -37,7 +37,7 @@ public class AccessControlListManager implements IAccessControl {
 
   public boolean check(String username, String resource) throws MissingRequiredAccessException {
     if (!accessControlList.containsKey(resource)) {
-      throw new MissingRequiredAccessException("DIDNT contains");
+      throw new MissingRequiredAccessException("Resource not permitted for user");
     }
 
     ArrayList<String> usersWithAccess = accessControlList.get(resource);

@@ -1,0 +1,12 @@
+start:alice,bob
+stop:alice,bob
+restart:alice,bob,cecilia
+readConfig:alice,bob
+setConfig:alice,bob
+print:alice,cecilia,david,erica,fred,george
+queue:alice,cecilia,david,erica,fred,george
+topQueue:alice,cecilia
+status:alice
+login:alice,bob,cecilia,david,erica,fred,george
+logout:alice,bob,cecilia,david,erica,fred,george
+addLogin:alice

@@ -9,11 +9,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class RoleBasedAccessControlManager implements IAccessControl {
+public class RoleBasedAccessControlManager implements IAccessControlManager {
 
-  private Map<String, Set<String>> roleHierarchy; // Role hierarchy (role -> set of inherited roles)
-  private Map<String, Set<String>> rolePermissions; // Permissions for each role
-  private Map<String, String> userRoles; // Roles assigned to each user
+  private final Map<String, Set<String>> roleHierarchy; // Role hierarchy (role -> set of inherited roles)
+  private final Map<String, Set<String>> rolePermissions; // Permissions for each role
+  private final Map<String, String> userRoles; // Roles assigned to each user
 
   public RoleBasedAccessControlManager(String rolesFile, String hierarchyFile, String userRolesFile,
       String permissionsFile) {

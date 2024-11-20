@@ -3,23 +3,19 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import auth.roles.AccessControlListManager;
 import auth.roles.MissingRequiredAccessException;
-import auth.roles.RoleBasedAccessControlManager;
 
-public class TestRBAC {
-  private RoleBasedAccessControlManager manager;
+public class UnitAccessControlListTest {
+  private AccessControlListManager manager;
 
   @Before
   public void setUp() throws Exception {
-    this.manager = new RoleBasedAccessControlManager(
-        "./src/test/res/rbac/roles.txt",
-        "./src/test/res/rbac/hierarchy.txt",
-        "./src/test/res/rbac/user_roles.txt",
-        "./src/test/res/rbac/permissions.txt");
+    this.manager = new AccessControlListManager("./src/test/res/acl_tests.txt");
   }
 
   @Test
-  public void testRBACSuccess() throws MissingRequiredAccessException {
+  public void testACLSuccess() throws MissingRequiredAccessException {
     // Manager Permissions
     assertTrue(this.manager.check("alice", "addLogin"));
 

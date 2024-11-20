@@ -17,17 +17,14 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.mindrot.jbcrypt.BCrypt;
 
-public class PasswordManager {
-  String passwordFile;
-
-  public PasswordManager() {
-    this("passwords.csv");
-  }
+public class PasswordManager implements IPasswordManager {
+  private final String passwordFile;
 
   public PasswordManager(String filename) {
     this.passwordFile = filename;
   }
 
+  @Override
   public boolean checkLogin(String username, String password) {
     Reader in;
     CSVFormat csvFormat;
@@ -76,9 +73,11 @@ public class PasswordManager {
     return success;
   }
 
+  @Override
   public boolean createLogin(String username, String password) {
     String salt = BCrypt.gensalt();
     String hPass = BCrypt.hashpw(password, salt);
+    System.out.println("Got here");
 
     try {
       BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.passwordFile), StandardOpenOption.APPEND);
@@ -95,6 +94,7 @@ public class PasswordManager {
     }
   }
 
+  @Override
   public void clear() {
     try {
       BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.passwordFile));
