@@ -10,10 +10,8 @@ import auth.roles.AccessControlProxy;
 import auth.roles.IAccessControlManager;
 import auth.roles.RoleBasedAccessControlManager;
 import auth.session.ISessionManager;
-import auth.session.Session;
 import auth.session.SessionManager;
 import auth.session.SessionProxy;
-import auth.session.ISession;
 import services.auth.AuthService;
 import services.auth.IAuthService;
 import services.printer.IPrintService;
@@ -50,12 +48,10 @@ public class Server {
         sessionManager,
         IPrintService.class);
 
-    ISession<IPrintService> sesh = new Session<IPrintService>(sessionProxiedPrintService);
-
     // Auth service
     IAuthService authService = new AuthService(passwordManager, sessionManager);
 
-    registry.rebind("printserver", sesh);
+    registry.rebind("printserver", sessionProxiedPrintService);
     registry.rebind("auth", authService);
   }
 }

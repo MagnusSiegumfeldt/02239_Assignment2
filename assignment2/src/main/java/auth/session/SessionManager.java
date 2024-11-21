@@ -6,13 +6,12 @@ import java.util.Base64;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-
 public class SessionManager implements ISessionManager {
   String username;
   LocalDateTime sessionTime;
   LocalDateTime sessionExp;
   String sessionToken;
-  
+
   private final int sessionLength;
 
   public SessionManager(int sessionLength) {
@@ -21,7 +20,7 @@ public class SessionManager implements ISessionManager {
 
   @Override
   public boolean checkSessionValid(String token) {
-    if (!hashToken(token).equals(sessionToken))  {
+    if (!token.equals(sessionToken)) {
       return false;
     }
 
@@ -38,9 +37,8 @@ public class SessionManager implements ISessionManager {
     this.username = username;
     this.sessionTime = LocalDateTime.now();
     this.sessionExp = this.sessionTime.plusSeconds(this.sessionLength);
-    String randomToken = generateRandomToken();
-    this.sessionToken = hashToken(randomToken);
-    return randomToken;
+    this.sessionToken = hashToken(generateRandomToken());
+    return this.sessionToken;
   }
 
   @Override
@@ -57,16 +55,14 @@ public class SessionManager implements ISessionManager {
   }
 
   private static String generateRandomToken() {
-      SecureRandom secureRandom = new SecureRandom();
-      byte[] tokenBytes = new byte[24];
-      secureRandom.nextBytes(tokenBytes);
-      return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+    SecureRandom secureRandom = new SecureRandom();
+    byte[] tokenBytes = new byte[24];
+    secureRandom.nextBytes(tokenBytes);
+    return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
   }
 
   public static String hashToken(String token) {
-      return BCrypt.hashpw(token, BCrypt.gensalt());
+    return BCrypt.hashpw(token, BCrypt.gensalt());
   }
-
-  
 
 }

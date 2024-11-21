@@ -33,21 +33,21 @@ public class IntegrationAuthServiceTest {
   @Test
   public void testLoginSuccess() throws RemoteException {
     assertTrue(this.passwordManager.checkLogin("user1", "test"));
-    this.service.login("user1", "test");
+    String token = this.service.login("user1", "test");
     assertEquals(this.sessionManager.getCurrentUser(), "user1");
-    assertTrue(this.sessionManager.checkSessionValid("user1"));
+    assertTrue(this.sessionManager.checkSessionValid(token));
   }
 
   @Test
   public void testLogoutSuccess() throws RemoteException {
     assertTrue(this.passwordManager.checkLogin("user1", "test"));
-    this.service.login("user1", "test");
+    String token = this.service.login("user1", "test");
     assertEquals(this.sessionManager.getCurrentUser(), "user1");
-    assertTrue(this.sessionManager.checkSessionValid("user1"));
+    assertTrue(this.sessionManager.checkSessionValid(token));
 
-    assertTrue(this.service.logout("user1"));
+    this.service.logout("user1");
     assertEquals(this.sessionManager.getCurrentUser(), null);
-    assertFalse(this.sessionManager.checkSessionValid("user1"));
+    assertFalse(this.sessionManager.checkSessionValid(token));
   }
 
   @Test(expected = RemoteException.class)
@@ -57,6 +57,6 @@ public class IntegrationAuthServiceTest {
 
   @Test(expected = RemoteException.class)
   public void testLogoutFail() throws RemoteException {
-    assertFalse(this.service.logout("user1"));
+    this.service.logout("user1");
   }
 }

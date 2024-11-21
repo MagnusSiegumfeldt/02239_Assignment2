@@ -17,7 +17,7 @@ public class AuthService extends UnicastRemoteObject implements IAuthService {
 
   @Override
   public String login(String username, String password) throws RemoteException {
-    if(sessionManager.getCurrentUser() != null) {
+    if (sessionManager.getCurrentUser() != null) {
       throw new RemoteException("Another user is already logged in");
     }
 
@@ -29,13 +29,13 @@ public class AuthService extends UnicastRemoteObject implements IAuthService {
   }
 
   @Override
-  public boolean logout(String username) throws RemoteException {
+  public void logout(String username) throws RemoteException {
     if (sessionManager.getCurrentUser() != null && sessionManager.getCurrentUser().equals(username)) {
       sessionManager.clearSession();
       System.out.println("Logging out");
-      return true;
+    } else {
+      throw new RemoteException("No user logged in");
     }
-    return false;
   }
 
 }

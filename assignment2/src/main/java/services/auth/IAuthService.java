@@ -7,6 +7,6 @@ public interface IAuthService extends Remote {
 
   public String login(String username, String password) throws RemoteException;
 
-  public boolean logout(String username) throws RemoteException;
+  public void logout(String username) throws RemoteException;
 
 }

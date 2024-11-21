@@ -1,8 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -56,89 +54,81 @@ public class EndToEndApplicationTest {
     IPrintService printServer = (IPrintService) Naming.lookup("rmi://localhost:5099/printserver");
     IAuthService authServer = (IAuthService) Naming.lookup("rmi://localhost:5099/auth");
 
-    boolean loginResult;
-    boolean logoutResult;
     String sessionToken;
     // new
 
-    //loginResult = authServer.login("alice", "alice_password");
-    //assertTrue(loginResult);
+    // loginResult = authServer.login("alice", "alice_password");
+    // assertTrue(loginResult);
     sessionToken = authServer.login("alice", "alice_password");
 
-    printServer.print("Test print 1", "printer1");
-    printServer.print("Test print 2", "printer1");
-    printServer.print("Test print 3", "printer1");
-    printServer.topQueue("printer1", 3);
-    printServer.queue("printer1");
-    printServer.restart();
+    printServer.print(sessionToken, "Test print 1", "printer1");
+    printServer.print(sessionToken, "Test print 2", "printer1");
+    printServer.print(sessionToken, "Test print 3", "printer1");
+    printServer.topQueue(sessionToken, "printer1", 3);
+    printServer.queue(sessionToken, "printer1");
+    printServer.restart(sessionToken);
 
-    logoutResult = authServer.logout("alice");
-    assertTrue(logoutResult);
+    authServer.logout("alice");
 
     // new
 
-    //loginResult = authServer.login("bob", "bob_password");
-    //assertTrue(loginResult);
+    // loginResult = authServer.login("bob", "bob_password");
+    // assertTrue(loginResult);
     sessionToken = authServer.login("bob", "bob_password");
-    printServer.start();
+    printServer.start(sessionToken);
     System.out.println("Test passed: Start operation performed by Bob.");
 
-    printServer.restart();
-    printServer.status("printer1");
-    printServer.setConfig("test", "test1");
-    printServer.readConfig("test");
+    printServer.restart(sessionToken);
+    printServer.status(sessionToken, "printer1");
+    printServer.setConfig(sessionToken, "test", "test1");
+    printServer.readConfig(sessionToken, "test");
 
-    logoutResult = authServer.logout("bob");
-    assertTrue(logoutResult);
+    authServer.logout("bob");
 
     // new
 
-    //loginResult = authServer.login("alice", "alice_password");
-    //assertTrue(loginResult);
+    // loginResult = authServer.login("alice", "alice_password");
+    // assertTrue(loginResult);
     sessionToken = authServer.login("alice", "alice_password");
-    printServer.start();
+    printServer.start(sessionToken);
     System.out.println("Test passed: Start operation performed by Alice.");
-    logoutResult = authServer.logout("alice");
-    assertTrue(logoutResult);
+    authServer.logout("alice");
 
     // new
 
-    //loginResult = authServer.login("bob", "bob_password");
-    //assertTrue(loginResult);
+    // loginResult = authServer.login("bob", "bob_password");
+    // assertTrue(loginResult);
     sessionToken = authServer.login("bob", "bob_password");
-    printServer.stop();
+    printServer.stop(sessionToken);
     System.out.println("Test passed: Stop operation performed by Bob.");
-    logoutResult = authServer.logout("bob");
-    assertTrue(logoutResult);
+    authServer.logout("bob");
 
     // new
 
-    //loginResult = authServer.login("cecilia", "cecilia_password");
-    //assertTrue(loginResult);
+    // loginResult = authServer.login("cecilia", "cecilia_password");
+    // assertTrue(loginResult);
     sessionToken = authServer.login("cecilia", "cecilia_password");
-    printServer.restart();
+    printServer.restart(sessionToken);
     System.out.println("Test passed: Restart operation performed by Cecilia.");
-    logoutResult = authServer.logout("cecilia");
-    assertTrue(logoutResult);
+    authServer.logout("cecilia");
 
     // new
 
-    //loginResult = authServer.login("david", "david_password");
-    //assertTrue(loginResult);
+    // loginResult = authServer.login("david", "david_password");
+    // assertTrue(loginResult);
     sessionToken = authServer.login("david", "david_password");
-    printServer.print("Document1", "printer1");
+    printServer.print(sessionToken, "Document1", "printer1");
     System.out.println("Test passed: Print operation performed by David.");
-    logoutResult = authServer.logout("david");
-    assertTrue(logoutResult);
+    authServer.logout("david");
 
     // new
 
-    //loginResult = authServer.login("alice", "alice_password");
-    //assertTrue(loginResult);
+    // loginResult = authServer.login("alice", "alice_password");
+    // assertTrue(loginResult);
     sessionToken = authServer.login("alice", "alice_password");
-    printServer.status("printer1");
+    printServer.status(sessionToken, "printer1");
     System.out.println("Test passed: Status operation performed by Alice.");
-    logoutResult = authServer.logout("alice");
-    assertTrue(logoutResult);
+    authServer.logout("alice");
+
   }
 }
