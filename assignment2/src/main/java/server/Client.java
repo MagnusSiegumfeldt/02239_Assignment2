@@ -11,30 +11,28 @@ import java.rmi.NotBoundException;
 
 public class Client {
   public static void main(String[] args) throws NotBoundException, MalformedURLException, RemoteException {
-    IPrintService printServer = (IPrintService) Naming.lookup("rmi://localhost:5099/printserver");
     IAuthService authServer = (IAuthService) Naming.lookup("rmi://localhost:5099/auth");
+    String token = authServer.login("alice", "alice_password");
 
-    // Creating new users
-    // PasswordManager passwordManager = new PasswordManager();
-    // passwordManager.createLogin("alice", "alice_password");
-    // passwordManager.createLogin("bob", "bob_password");
-    // passwordManager.createLogin("cecilia", "cecilia_password");
-    // passwordManager.createLogin("david", "david_password");
-    // passwordManager.createLogin("erica", "erica_password");
-    // passwordManager.createLogin("fred", "fred_password");
-    // passwordManager.createLogin("george", "george_password");
+    IPrintService printServer = (IPrintService) Naming.lookup("rmi://localhost:5099/printserver");
 
-    // authServer.login("alice", "alice_password");
-    // printServer.print("Test print 1", "printer1");
-    // printServer.print("Test print 2", "printer1");
-    // printServer.print("Test print 3", "printer1");
-    // printServer.topQueue("printer1", 3);
-    // printServer.queue("printer1");
-    // authServer.logout("alice");
+    printServer.print(token, "Test print 1", "printer1");
+    printServer.print(token, "Test print 1", "printer1");
+    printServer.print(token, "Test print 2", "printer1");
+    printServer.print(token, "Test print 3", "printer1");
+    printServer.topQueue(token, "printer1", 3);
+    printServer.queue(token, "printer1");
 
-    authServer.login("alice", "alice_password");
-    printServer.restart();
     authServer.logout("alice");
-
   }
 }
+
+// Creating new users
+// PasswordManager passwordManager = new PasswordManager();
+// passwordManager.createLogin("alice", "alice_password");
+// passwordManager.createLogin("bob", "bob_password");
+// passwordManager.createLogin("cecilia", "cecilia_password");
+// passwordManager.createLogin("david", "david_password");
+// passwordManager.createLogin("erica", "erica_password");
+// passwordManager.createLogin("fred", "fred_password");
+// passwordManager.createLogin("george", "george_password");

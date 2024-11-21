@@ -17,14 +17,14 @@ public class UnitSessionManagerTest {
 
   @Test
   public void testSessionSet() {
-    this.sessionManager.set("user1");
-    assertTrue(this.sessionManager.checkSessionPeriod("user1"));
-    assertFalse(this.sessionManager.checkSessionPeriod("user2"));
+    String token = this.sessionManager.createSession("user1");
+    assertTrue(this.sessionManager.checkSessionValid(token));
+    assertFalse(this.sessionManager.checkSessionValid("RANDOM TOKEN"));
 
     try {
       Thread.sleep(5000);
     } catch (InterruptedException e) {
     }
-    assertFalse(this.sessionManager.checkSessionPeriod("user1"));
+    assertFalse(this.sessionManager.checkSessionValid(token));
   }
 }

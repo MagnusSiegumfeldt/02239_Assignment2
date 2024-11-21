@@ -7,8 +7,8 @@ import auth.password.IPasswordManager;
 import auth.session.ISessionManager;
 
 public class AuthService extends UnicastRemoteObject implements IAuthService {
-  private transient final IPasswordManager passwordManager;
-  private transient final ISessionManager sessionManager;
+  private final transient IPasswordManager passwordManager;
+  private final transient ISessionManager sessionManager;
 
   public AuthService(IPasswordManager passwordManager, ISessionManager sessionManager) throws RemoteException {
     this.passwordManager = passwordManager;
@@ -16,23 +16,26 @@ public class AuthService extends UnicastRemoteObject implements IAuthService {
   }
 
   @Override
-  public boolean login(String username, String password) throws RemoteException {
+  public String login(String username, String password) throws RemoteException {
+    if (sessionManager.getCurrentUser() != null) {
+      throw new RemoteException("Another user is already logged in");
+    }
+
     if (passwordManager.checkLogin(username, password)) {
-      sessionManager.set(username);
-      return true;
+      return sessionManager.createSession(username);
     } else {
-      return false;
+      throw new RemoteException("Password or username is incorrect");
     }
   }
 
   @Override
-  public boolean logout(String username) throws RemoteException {
+  public void logout(String username) throws RemoteException {
     if (sessionManager.getCurrentUser() != null && sessionManager.getCurrentUser().equals(username)) {
-      sessionManager.unset();
+      sessionManager.clearSession();
       System.out.println("Logging out");
-      return true;
+    } else {
+      throw new RemoteException("No user logged in");
     }
-    return false;
   }
 
 }

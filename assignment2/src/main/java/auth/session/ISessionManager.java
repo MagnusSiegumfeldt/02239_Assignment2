@@ -1,11 +1,11 @@
 package auth.session;
 
 public interface ISessionManager {
-  void set(String username);
+  boolean checkSessionValid(String token);
+  
+  String createSession(String username);
 
-  boolean checkSessionPeriod(String username);
-
-  void unset();
+  void clearSession();
 
   String getCurrentUser();
 

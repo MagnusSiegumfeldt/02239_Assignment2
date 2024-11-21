@@ -46,7 +46,6 @@ public class Server {
 
     IPrintService sessionProxiedPrintService = SessionProxy.createProxy(accessControlProxiedPrintService,
         sessionManager,
-        passwordManager,
         IPrintService.class);
 
     // Auth service
