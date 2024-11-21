@@ -11,7 +11,6 @@ import services.printer.IPrintService;
 import services.printer.PrintService;
 import auth.session.*;
 import auth.password.*;
-import auth.roles.*;
 
 public class EndToEndApplicationTest {
   ISessionManager sessionManager;
@@ -26,19 +25,9 @@ public class EndToEndApplicationTest {
     this.sessionManager = new SessionManager(10);
     this.passwordManager = new PasswordManager(base + "passwords.csv");
 
-    IAccessControlManager accessControlManager = new RoleBasedAccessControlManager(
-        base + "/rbac/roles.txt",
-        base + "/rbac/hierarchy.txt",
-        base + "/rbac/user_roles.txt",
-        base + "/rbac/permissions.txt");
-
     IPrintService printService = new PrintService();
-    IPrintService accessControlProxiedPrintService = AccessControlProxy.createProxy(printService,
-        accessControlManager,
-        sessionManager,
-        IPrintService.class);
 
-    IPrintService sessionProxiedPrintService = SessionProxy.createProxy(accessControlProxiedPrintService,
+    IPrintService sessionProxiedPrintService = SessionProxy.createProxy(printService,
         sessionManager,
         IPrintService.class);
 

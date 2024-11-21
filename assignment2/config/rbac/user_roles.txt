@@ -1,7 +1,0 @@
-alice:manager
-bob:technician
-cecilia:poweruser
-david:basicuser
-erica:basicuser
-fred:basicuser
-george:basicuser

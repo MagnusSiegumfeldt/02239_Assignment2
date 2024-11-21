@@ -1,4 +1,0 @@
-manager
-technician
-poweruser
-basicuser

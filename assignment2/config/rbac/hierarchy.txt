@@ -1,3 +1,0 @@
-manager->technician
-manager->poweruser
-poweruser->basicuser

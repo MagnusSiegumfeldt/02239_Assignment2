@@ -1,4 +1,0 @@
-Service Technician: start, stop, restart, status, readConfig, setConfig
-Manager: can do all
-Power User: print, queue, topQueue, restart
-users: print, queue

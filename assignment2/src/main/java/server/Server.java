@@ -6,9 +6,6 @@ import java.rmi.registry.Registry;
 
 import auth.password.IPasswordManager;
 import auth.password.PasswordManager;
-import auth.roles.AccessControlProxy;
-import auth.roles.IAccessControlManager;
-import auth.roles.RoleBasedAccessControlManager;
 import auth.session.ISessionManager;
 import auth.session.SessionManager;
 import auth.session.SessionProxy;
@@ -21,30 +18,14 @@ public class Server {
   public static void main(String[] args) throws RemoteException {
     Registry registry = LocateRegistry.createRegistry(5099);
 
-    String base = "assignment2/config/";
-
     ISessionManager sessionManager = new SessionManager(10);
     IPasswordManager passwordManager = new PasswordManager("assignment2/config/passwords.csv");
 
     // Print service
 
-    // IAccessControlManager accessControlManager = new
-    // AccessControlListManager(base +
-    // "acl/acl.txt");
-
-    IAccessControlManager accessControlManager = new RoleBasedAccessControlManager(
-        base + "/rbac/roles.txt",
-        base + "/rbac/hierarchy.txt",
-        base + "/rbac/user_roles.txt",
-        base + "/rbac/permissions.txt");
-
     IPrintService printService = new PrintService();
-    IPrintService accessControlProxiedPrintService = AccessControlProxy.createProxy(printService,
-        accessControlManager,
-        sessionManager,
-        IPrintService.class);
 
-    IPrintService sessionProxiedPrintService = SessionProxy.createProxy(accessControlProxiedPrintService,
+    IPrintService sessionProxiedPrintService = SessionProxy.createProxy(printService,
         sessionManager,
         IPrintService.class);
 
