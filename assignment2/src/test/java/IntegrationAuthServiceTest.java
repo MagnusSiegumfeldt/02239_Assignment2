@@ -35,7 +35,7 @@ public class IntegrationAuthServiceTest {
     assertTrue(this.passwordManager.checkLogin("user1", "test"));
     this.service.login("user1", "test");
     assertEquals(this.sessionManager.getCurrentUser(), "user1");
-    assertTrue(this.sessionManager.checkSessionPeriod("user1"));
+    assertTrue(this.sessionManager.checkSessionValid("user1"));
   }
 
   @Test
@@ -43,19 +43,19 @@ public class IntegrationAuthServiceTest {
     assertTrue(this.passwordManager.checkLogin("user1", "test"));
     this.service.login("user1", "test");
     assertEquals(this.sessionManager.getCurrentUser(), "user1");
-    assertTrue(this.sessionManager.checkSessionPeriod("user1"));
+    assertTrue(this.sessionManager.checkSessionValid("user1"));
 
     assertTrue(this.service.logout("user1"));
     assertEquals(this.sessionManager.getCurrentUser(), null);
-    assertFalse(this.sessionManager.checkSessionPeriod("user1"));
+    assertFalse(this.sessionManager.checkSessionValid("user1"));
   }
 
-  @Test
+  @Test(expected = RemoteException.class)
   public void testLoginFailInvalidCrendentials() throws RemoteException {
-    assertFalse(this.service.login("user1", "wrong password"));
+    this.service.login("user1", "wrong password");
   }
 
-  @Test
+  @Test(expected = RemoteException.class)
   public void testLogoutFail() throws RemoteException {
     assertFalse(this.service.logout("user1"));
   }

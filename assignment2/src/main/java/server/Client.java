@@ -24,16 +24,14 @@ public class Client {
     // passwordManager.createLogin("fred", "fred_password");
     // passwordManager.createLogin("george", "george_password");
 
-    // authServer.login("alice", "alice_password");
-    // printServer.print("Test print 1", "printer1");
-    // printServer.print("Test print 2", "printer1");
-    // printServer.print("Test print 3", "printer1");
-    // printServer.topQueue("printer1", 3);
-    // printServer.queue("printer1");
-    // authServer.logout("alice");
-
-    authServer.login("alice", "alice_password");
-    printServer.restart();
+    String sessionToken = authServer.login("alice", "alice_password");
+    // printServer.setSessionToken(sessionToken);
+    printServer.print("Test print 1", "printer1");
+    printServer.print("Test print 1", "printer1");
+    printServer.print("Test print 2", "printer1");
+    printServer.print("Test print 3", "printer1");
+    printServer.topQueue("printer1", 3);
+    printServer.queue("printer1");
     authServer.logout("alice");
 
   }

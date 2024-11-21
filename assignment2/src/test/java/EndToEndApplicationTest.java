@@ -42,7 +42,6 @@ public class EndToEndApplicationTest {
 
     IPrintService sessionProxiedPrintService = SessionProxy.createProxy(accessControlProxiedPrintService,
         sessionManager,
-        passwordManager,
         IPrintService.class);
 
     // Auth service
@@ -59,11 +58,12 @@ public class EndToEndApplicationTest {
 
     boolean loginResult;
     boolean logoutResult;
-
+    String sessionToken;
     // new
 
-    loginResult = authServer.login("alice", "alice_password");
-    assertTrue(loginResult);
+    //loginResult = authServer.login("alice", "alice_password");
+    //assertTrue(loginResult);
+    sessionToken = authServer.login("alice", "alice_password");
 
     printServer.print("Test print 1", "printer1");
     printServer.print("Test print 2", "printer1");
@@ -77,8 +77,9 @@ public class EndToEndApplicationTest {
 
     // new
 
-    loginResult = authServer.login("bob", "bob_password");
-    assertTrue(loginResult);
+    //loginResult = authServer.login("bob", "bob_password");
+    //assertTrue(loginResult);
+    sessionToken = authServer.login("bob", "bob_password");
     printServer.start();
     System.out.println("Test passed: Start operation performed by Bob.");
 
@@ -92,8 +93,9 @@ public class EndToEndApplicationTest {
 
     // new
 
-    loginResult = authServer.login("alice", "alice_password");
-    assertTrue(loginResult);
+    //loginResult = authServer.login("alice", "alice_password");
+    //assertTrue(loginResult);
+    sessionToken = authServer.login("alice", "alice_password");
     printServer.start();
     System.out.println("Test passed: Start operation performed by Alice.");
     logoutResult = authServer.logout("alice");
@@ -101,8 +103,9 @@ public class EndToEndApplicationTest {
 
     // new
 
-    loginResult = authServer.login("bob", "bob_password");
-    assertTrue(loginResult);
+    //loginResult = authServer.login("bob", "bob_password");
+    //assertTrue(loginResult);
+    sessionToken = authServer.login("bob", "bob_password");
     printServer.stop();
     System.out.println("Test passed: Stop operation performed by Bob.");
     logoutResult = authServer.logout("bob");
@@ -110,8 +113,9 @@ public class EndToEndApplicationTest {
 
     // new
 
-    loginResult = authServer.login("cecilia", "cecilia_password");
-    assertTrue(loginResult);
+    //loginResult = authServer.login("cecilia", "cecilia_password");
+    //assertTrue(loginResult);
+    sessionToken = authServer.login("cecilia", "cecilia_password");
     printServer.restart();
     System.out.println("Test passed: Restart operation performed by Cecilia.");
     logoutResult = authServer.logout("cecilia");
@@ -119,8 +123,9 @@ public class EndToEndApplicationTest {
 
     // new
 
-    loginResult = authServer.login("david", "david_password");
-    assertTrue(loginResult);
+    //loginResult = authServer.login("david", "david_password");
+    //assertTrue(loginResult);
+    sessionToken = authServer.login("david", "david_password");
     printServer.print("Document1", "printer1");
     System.out.println("Test passed: Print operation performed by David.");
     logoutResult = authServer.logout("david");
@@ -128,8 +133,9 @@ public class EndToEndApplicationTest {
 
     // new
 
-    loginResult = authServer.login("alice", "alice_password");
-    assertTrue(loginResult);
+    //loginResult = authServer.login("alice", "alice_password");
+    //assertTrue(loginResult);
+    sessionToken = authServer.login("alice", "alice_password");
     printServer.status("printer1");
     System.out.println("Test passed: Status operation performed by Alice.");
     logoutResult = authServer.logout("alice");

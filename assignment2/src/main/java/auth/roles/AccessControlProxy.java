@@ -12,8 +12,8 @@ import auth.session.ISessionManager;
 
 public class AccessControlProxy implements InvocationHandler, Serializable {
   private final Object target;
-  private transient final IAccessControlManager accessControl;
-  private transient final ISessionManager sessionManager;
+  private final transient  IAccessControlManager accessControl;
+  private final transient  ISessionManager sessionManager;
 
   public AccessControlProxy(Object target, IAccessControlManager accessControl, ISessionManager sessionManager) {
     this.target = target;

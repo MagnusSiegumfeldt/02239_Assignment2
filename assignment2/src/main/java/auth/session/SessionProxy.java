@@ -8,32 +8,31 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import auth.password.IPasswordManager;
-
 public class SessionProxy implements InvocationHandler, Serializable {
   private final Object target;
-  private transient final ISessionManager sessionManager;
+  private final transient ISessionManager sessionManager;
 
   public SessionProxy(Object target, ISessionManager sessionManager) {
     this.target = target;
-    System.out.println("param" + sessionManager == null);
+    System.out.println("SESSSIONSSSS");
     this.sessionManager = sessionManager;
   }
 
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-    String currentUser = this.sessionManager.getCurrentUser();
-    if (currentUser == null || currentUser.isEmpty() || !this.sessionManager.checkSessionPeriod(currentUser)) {
-      throw new RemoteException("User is not logged in");
-    }
+    // String token = "";
+    // if (!this.sessionManager.checkSessionValid(token)) {
+    //   throw new RemoteException("Session not validated");
+    // }
+
+    System.out.println("INVOKE");
 
     return method.invoke(target, args);
   }
 
   @SuppressWarnings("unchecked")
-  public static <T extends Remote> T createProxy(T target, ISessionManager sessionManager,
-      IPasswordManager passwordManager, Class<T> interfaceType)
+  public static <T extends Remote> T createProxy(T target, ISessionManager sessionManager, Class<T> interfaceType)
       throws RemoteException {
     T proxy = (T) Proxy.newProxyInstance(
         interfaceType.getClassLoader(),
